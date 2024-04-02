@@ -1,3 +1,8 @@
-# export PATH=$PATH:/usr/local/go/bin
+export EDI_PATH=${HOME}/Projects/Bolttech
+export JAVA_HOME=/opt/jdk17
+export PATH=$PATH:$JAVA_HOME/bin
 
-# export PATH="$PATH:/home/pvsfair/.local/bin:/mnt/c/Users/pvsfa/AppData/Local/Programs/Microsoft VS Code/bin"
+export M2_HOME=/opt/maven
+export MAVEN_HOME=/opt/maven
+export PATH=${M2_HOME}/bin:${PATH}
+export PATH=$PATH:/usr/local/go/bin

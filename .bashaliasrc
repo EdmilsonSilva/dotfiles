@@ -41,15 +41,22 @@ function ealias(){
 alias ..="cd .."
 alias cd..="cd .."
 
-# Fuck aliases
-eval $(thefuck --alias)
-alias damn="fuck"
-
 # docker compose alias
 alias dcu="docker compose up"
+alias dcud="docker compose up -d"
 alias dcub="docker compose up --build"
+alias dcudb="docker compose up -d --build"
 alias dcd="docker compose down"
+alias dcps="docker compose ps"
+alias dcrm="docker compose rm -fs"
 alias dcdf="docker compose down -v --remove-orphans"
+alias dce="docker compose exec -it bash "
+alias dcp="docker compose pull"
+alias dcl="docker compose logs"
+alias dcs="docker compose stop"
+alias dps="docker ps"
+alias dl="docker ps -l -q"
+alias k="kubectl"
 
 # mvn alias
 alias mvnquarkus="mvn clean quarkus:dev -P.env"
@@ -57,19 +64,12 @@ alias mvnquarkus="mvn clean quarkus:dev -P.env"
 # xclip alias (clipboard)
 alias xc="xclip -selection clipboard"
 
-# did not work as expected
-#function xc(){
-#	sh $1 | xclip -selection clipboard
-#}
-
 alias k9s="k9s-nsg"
 alias k9s-cluster-tools="k9s-nsg --kubeconfig ~/.kube/configThLiveToolsProd"
 alias k9s-eu-broker="k9s-nsg --kubeconfig ~/.kube/configeubrokermasterblaster"
 alias k9s-staging="k9s-nsg --kubeconfig ~/.kube/configstagmaster"
 
 alias watcher="ag -l | entr -rc"
-
-alias upbg="python3 /home/pvsfair/dev/changedesktop/changeDesktopDay.py"
 
 alias lg="lazygit"
 alias monitorDualLeft="xrandr --output HDMI1 --auto --left-of eDP1"
