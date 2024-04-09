@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+
+# Running the script only by root
+[ "$EUID" != 0 ] && echo "You have to run this script with superuser" && exit 1
+
 # Get cpu usage of last minitue
 avg_cpu_use=$(uptime)
 IFS=',' read -ra avg_cpu_use_arr <<<"$avg_cpu_use"
