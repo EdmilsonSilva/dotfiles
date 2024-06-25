@@ -8,7 +8,6 @@ fi
 # true if DOTFILES_PATH is not set
 if [ -z ${DOTFILES_PATH} ]; then
   echo "setting up bash and aliases"
-  
   function source_file(){
       echo "
   if [ -f \$DOTFILES_PATH/$1 ]; then
@@ -27,7 +26,6 @@ if [ -z ${DOTFILES_PATH} ]; then
 
   # source ~/.bashrc
   echo "Please Restart you terminal for the changes to take effect. Or you can run `source ~/.bashrc`"
-  
 fi
 
 if [ -f .env ]; then
@@ -45,8 +43,7 @@ if [ -f .env ]; then
   filesToSubstituteEnvs=(".wakatime.cfg" ".gitconfig")
   # create backups and execute for all files
   for file in ${filesToSubstituteEnvs[@]}; do
-    
-    cp "./$file" "./$file.bkp"  
+    cp "./$file" "./$file.bkp"
     for str in ${envVarNames[@]}; do
       sed -i "s/\${$str}/${!str}/g" $file
     done
@@ -63,6 +60,18 @@ if ! command -v git &> /dev/null; then
 fi
 echo "git version => $(git --version)"
 
+# installing docker
+if ! command -v docker &> /dev/null; then
+  echo 'Installing docker'
+  sudo addgroup --system docker
+  sudo usermod -aG docker $USER
+   sudo usermod -aG docker root
+  sudo snap install docker
+  sudo chown $USER:docker /var/run/docker.sock
+fi
+echo "docker version => $(docker version)"
+echo "docker version => $(docker compose version)"
+
 # installing net-tools
 if ! command -v ifconfig &> /dev/null; then
   echo 'Installing net-tools'
@@ -76,6 +85,25 @@ if ! command -v jq &> /dev/null; then
   sudo apt install jq -y
 fi
 echo "JQ version => $(jq --version)"
+
+# installing kubectl
+if ! command -v kubectl &> /dev/null; then
+  echo 'Installing kubectl'
+  sudo snap install kubectl --classic
+fi
+echo "kubectl version => $(kubectl version --client)"
+sudo cp config/* ~/
+echo "kubectl set context (staging-shared)"
+kubectl config set-context --current --namespace=staging-shared
+echo "kubectl list pods"
+kubectl get pods
+
+# installing slack
+echo 'Installing slack'
+sudo snap install slack
+# installing postman
+echo 'Installing postman'
+sudo snap install postman
 
 # installing fzf
 if ! command -v fzf &> /dev/null; then
@@ -92,6 +120,21 @@ if ! command -v python3 &> /dev/null; then
   pip3 install thefuck --user
 fi
 echo "python3 version => $(python3 --version)"
+
+# installing java
+if ! command -v java &> /dev/null; then
+  echo 'Installing java'
+  sudo apt update
+  sudo apt install openjdk-17-jdk openjdk-17-jre -y
+fi
+echo "java version => $(java -version)"
+
+# installing maven
+if ! command -v mvn &> /dev/null; then
+  echo 'Installing maven'
+  sudo apt install maven -y
+fi
+echo "maven version => $(mvn -version)"
 
 if [ -z ${NVM_DIR} ]; then
   nvmLatestVersion=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r '.tag_name')
@@ -119,6 +162,14 @@ if ! [ -z ${NVM_DIR} ]; then
   fi
 fi
 
+if ! command -v go &> /dev/null; then
+  echo 'Installing go'
+  wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
+  sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.4.linux-amd64.tar.gz
+  rm -rf go1.22.4.linux-amd64.tar.gz
+fi
+echo "go version => $(go version)"
+
 if ! command -v rg &> /dev/null; then
   echo 'Installing ripgrep'
   sudo apt install ripgrep
@@ -132,21 +183,6 @@ fi
 echo "Node version => $(node --version)"
 
 sh ./install_nvim.sh
-
-if ! command -v i3 &> /dev/null; then
-  echo 'Installing i3'
-  sudo apt install i3 -y
-fi
-
-echo 'Configuring i3 and creating symlink'
-# check if .config/nvim folder exists before creating symlink
-if [ -d ~/.config/i3 ]; then
-  mv ~/.config/i3{,.bkp}
-fi
-
-# check if .config/nvim still exists, if not create symlink
-if [ ! -a ~/.config/i3 ]; then
-  ln -s $DOTFILES_PATH/i3 $HOME/.config/i3
-fi
+sh ./install_i3.sh
 
 echo "bye"
